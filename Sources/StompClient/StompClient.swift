@@ -6,8 +6,8 @@
 //  Copyright © 2016 nogle. All rights reserved.
 //
 
-import UIKit
 import Starscream
+import Foundation
 
 public protocol StompClientDelegate: NSObjectProtocol {
     
@@ -99,18 +99,19 @@ public final class StompClient {
 
 // MARK: - Websocket Delegate
 extension StompClient: WebSocketDelegate {
+
     
-    public func websocketDidConnect(socket: WebSocket) {
+    public func websocketDidConnect(socket: WebSocketClient) {
         // We should wait for server response an open type frame.
     }
     
-    public func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
+    public func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
         if let error = error {
-            delegate?.stompClient(self, didErrorOccurred: error)
+            delegate?.stompClient(self, didErrorOccurred: error as NSError)
         }
     }
     
-    public func websocketDidReceiveMessage(socket: WebSocket, text: String) {
+    public func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
         var mutableText = text
         let firstCharacter = mutableText.remove(at: mutableText.startIndex)
         do {
@@ -146,7 +147,7 @@ extension StompClient: WebSocketDelegate {
         }
     }
     
-    public func websocketDidReceiveData(socket: WebSocket, data: Data) {
+    public func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
         // This delegate will NOT be called, since STOMP is a message convey protocol.
     }
     
@@ -197,6 +198,15 @@ public protocol WebSocketProtocol {
 }
 
 extension WebSocket: WebSocketProtocol {
+    public var headers: [String : String] {
+        get {
+            return self.headers
+        }
+        set {
+            self.headers = newValue
+        }
+    }
+    
     public func disconnect(_ forceTimeout: TimeInterval?) {
         disconnect(forceTimeout: forceTimeout)
     }
