@@ -9,7 +9,7 @@
 import Starscream
 import Foundation
 
-public protocol StompClientDelegate: NSObjectProtocol {
+public protocol StompClientDelegate {
     
     func stompClientDidConnected(_ client: StompClient)
     func stompClient(_ client: StompClient, didErrorOccurred error: NSError)
@@ -20,7 +20,7 @@ public protocol StompClientDelegate: NSObjectProtocol {
 public final class StompClient {
     
     // MARK: - Public Properties
-    public weak var delegate: StompClientDelegate?
+    public var delegate: StompClientDelegate?
     public var isConnected: Bool {
         return socket.isConnected
     }
